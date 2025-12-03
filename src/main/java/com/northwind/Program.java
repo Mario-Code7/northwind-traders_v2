@@ -2,8 +2,6 @@ package com.northwind;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 
-import javax.sql.DataSource;
-
 public class Program {
     public static void main(String[] args) {
         String username = args[0];
