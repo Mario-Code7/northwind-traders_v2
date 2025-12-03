@@ -117,18 +117,17 @@ public class Customer {
 
     @Override
     public String toString() {
-        return "Customer{" +
-                "customerId='" + customerId + '\'' +
-                ", companyName='" + companyName + '\'' +
-                ", contactName='" + contactName + '\'' +
-                ", contactTitle='" + contactTitle + '\'' +
-                ", address='" + address + '\'' +
-                ", city='" + city + '\'' +
-                ", region='" + region + '\'' +
-                ", postalCode='" + postalCode + '\'' +
-                ", country='" + country + '\'' +
-                ", phone='" + phone + '\'' +
-                ", fax='" + fax + '\'' +
-                '}';
+        return  "\r Customer \n" +
+                " customerId = " + customerId + '\n' +
+                " companyName = " + companyName + '\n' +
+                " contactName = " + contactName + '\n' +
+                " contactTitle = " + contactTitle + '\n' +
+                " address = " + address + '\n' +
+                " city = " + city + '\n' +
+                " region = " + region + '\n' +
+                " postalCode = " + postalCode + '\n' +
+                " country = " + country + '\n' +
+                " phone = " + phone + '\n' +
+                " fax = " + fax + '\n' + '\n';
     }
 }
