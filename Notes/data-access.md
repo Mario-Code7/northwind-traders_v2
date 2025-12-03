@@ -1,5 +1,6 @@
 # Data Access
 
+- Bring in maven dependency of `commons.dbcp`
 - store username and passwords as configured command-line arguments
 - use the `DataSource` object to store username, password, and database url
 
