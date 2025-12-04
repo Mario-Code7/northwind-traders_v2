@@ -30,7 +30,7 @@ public class Product {
     }
 
     public void setProductId(int productId) {
-        productId = productId;
+        this.productId = productId;
     }
 
     public String getProductName() {
@@ -70,7 +70,7 @@ public class Product {
     }
 
     public void setUnitPrice(double unitPrice) {
-        unitPrice = unitPrice;
+        this.unitPrice = unitPrice;
     }
 
     public int getUnitsInStock() {
@@ -107,7 +107,7 @@ public class Product {
 
     @Override
     public String toString() {
-        return  "\r Product \n" +
+        return  "\r Product: \n" +
                 " productId = " + productId + '\n' +
                 " productName = " + productName + '\n' +
                 " supplerId = " + supplierId + '\n' +

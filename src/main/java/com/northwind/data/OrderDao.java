@@ -1,24 +1,26 @@
 package com.northwind.data;
 
+import com.northwind.model.Order;
 import com.northwind.model.Product;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductDao {
+public class OrderDao {
     private DataSource dataSource;
 
-    public ProductDao(DataSource dataSource) {
+    public OrderDao(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
-    public List<Product> getAll() {
-        List<Product> products = new ArrayList<>();
+    public List<Order> getAll() {
+        List<Order> orders = new ArrayList<>();
         String query =  """
-            select ProductID, ProductName, SupplierID, CategoryID, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued
-            from products
+            select OrderId, CustomerID, EmployeeID, OrderDate, RequiredDate, ShippedDate, ShipVia, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry
+            from orders
             """;
         try(Connection connection = dataSource.getConnection();
             PreparedStatement statement = connection.prepareStatement(query)) {
@@ -26,61 +28,95 @@ public class ProductDao {
             try(ResultSet resultSet = statement.executeQuery()) {
 
                 while(resultSet.next()) {
-                    Product product = new Product(
-                            resultSet.getInt("ProductID"),
-                            resultSet.getString("ProductName"),
-                            resultSet.getInt("SupplierID"),
-                            resultSet.getInt("CategoryID"),
-                            resultSet.getString("QuantityPerUnit"),
-                            resultSet.getDouble("UnitPrice"),
-                            resultSet.getInt("UnitsInStock"),
-                            resultSet.getInt("UnitsOnOrder"),
-                            resultSet.getInt("ReorderLevel"),
-                            resultSet.getInt("Discontinued"));
 
-                    products.add(product);
+                    LocalDateTime orderDate = null;
+                    Timestamp tsOrder = resultSet.getTimestamp("OrderDate");
+                    if (tsOrder != null) orderDate = tsOrder.toLocalDateTime();
+
+                    LocalDateTime requiredDate = null;
+                    Timestamp tsRequired = resultSet.getTimestamp("RequiredDate");
+                    if (tsRequired != null) requiredDate = tsRequired.toLocalDateTime();
+
+                    LocalDateTime shippedDate = null;
+                    Timestamp tsShipped = resultSet.getTimestamp("ShippedDate");
+                    if (tsShipped != null) shippedDate = tsShipped.toLocalDateTime();
+
+                    Order order = new Order(
+                            resultSet.getInt("OrderID"),
+                            resultSet.getString("CustomerID"),
+                            resultSet.getInt("EmployeeID"),
+                            orderDate,
+                            requiredDate,
+                            shippedDate,
+                            resultSet.getInt("ShipVia"),
+                            resultSet.getDouble("Freight"),
+                            resultSet.getString("ShipName"),
+                            resultSet.getString("ShipAddress"),
+                            resultSet.getString("ShipCity"),
+                            resultSet.getString("ShipRegion"),
+                            resultSet.getString("ShipPostalCode"),
+                            resultSet.getString("ShipCountry")
+
+                    );
+
+                    orders.add(order);
                 }
             }
         } catch (SQLException e) {
             System.out.println("There was an error retrieving the data. Please try again.");
             e.printStackTrace();
         }
-        return products;
+        return orders;
     }
 
-    public Product find(int productId) {
-        Product product = null;
+    public Order find(String customerId) {
+        Order order = null;
         String query = """
-            select ProductID, ProductName, SupplierID, CategoryID, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued
-            from products
-            WHERE productId = ?
+            select OrderId, CustomerID, EmployeeID, OrderDate, RequiredDate, ShippedDate, ShipVia, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry
+            from orders
+            WHERE customerId = ?
             """;
 
         try(Connection connection = dataSource.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
-                preparedStatement.setInt(1, productId);
+            preparedStatement.setString(1, customerId);
 
-                try(ResultSet resultSet = preparedStatement.executeQuery()) {
-                    if (resultSet.next()) {
-                        product = new Product (
-                                resultSet.getInt("ProductID"),
-                                resultSet.getString("ProductName"),
-                                resultSet.getInt("SupplierID"),
-                                resultSet.getInt("CategoryID"),
-                                resultSet.getString("QuantityPerUnit"),
-                                resultSet.getDouble("UnitPrice"),
-                                resultSet.getInt("UnitsInStock"),
-                                resultSet.getInt("UnitsOnOrder"),
-                                resultSet.getInt("ReorderLevel"),
-                                resultSet.getInt("Discontinued"));
-                    }
+            try(ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    LocalDateTime orderDate = null;
+                    Timestamp tsOrder = resultSet.getTimestamp("OrderDate");
+                    if (tsOrder != null) orderDate = tsOrder.toLocalDateTime();
+
+                    LocalDateTime requiredDate = null;
+                    Timestamp tsRequired = resultSet.getTimestamp("RequiredDate");
+                    if (tsRequired != null) requiredDate = tsRequired.toLocalDateTime();
+
+                    LocalDateTime shippedDate = null;
+                    Timestamp tsShipped = resultSet.getTimestamp("ShippedDate");
+                    if (tsShipped != null) shippedDate = tsShipped.toLocalDateTime();
+                    order = new Order(
+                        resultSet.getInt("OrderID"),
+                        resultSet.getString("CustomerID"),
+                        resultSet.getInt("EmployeeID"),
+                        orderDate,
+                        requiredDate,
+                        shippedDate,
+                        resultSet.getInt("ShipVia"),
+                        resultSet.getDouble("Freight"),
+                        resultSet.getString("ShipName"),
+                        resultSet.getString("ShipAddress"),
+                        resultSet.getString("ShipCity"),
+                        resultSet.getString("ShipRegion"),
+                        resultSet.getString("ShipPostalCode"),
+                        resultSet.getString("ShipCountry"));
                 }
+            }
         } catch(SQLException e) {
             System.out.println("There is an error retrieving the data. Please try again!");
             e.printStackTrace();
         }
-        return product;
+        return order;
     }
 
     public Product add(Product product) {
