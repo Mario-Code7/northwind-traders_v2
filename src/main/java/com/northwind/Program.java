@@ -30,7 +30,7 @@ public class Program {
             System.out.println(product);
         }
 
-        System.out.println("--Find a ProductID by ID--");
+        System.out.println("--Find a Product by ID--");
         Product findProduct = productDao.find(1);
         if (findProduct != null) {
             System.out.println("Found: " + findProduct);
@@ -38,5 +38,51 @@ public class Program {
             System.out.println("Product with ID 1 not found!");
         }
 
+        System.out.println("--Add new product-- ");
+        Product newProduct = new Product(0,
+                "Tasty Cinnamon Toast",
+                2,
+                2,
+                "25 boxes",
+                27.00,
+                19,
+                7,
+                7,
+                0
+        );
+        Product addedProduct = productDao.add(newProduct);
+        System.out.println("Added: " + addedProduct);
+
+        System.out.println("\n--- Test 4: Verify Customer Was Added ---");
+        Product verifyProduct = productDao.find(addedProduct.getProductId());
+        if (verifyProduct != null) {
+            System.out.println("Verified: " + verifyProduct);
+        } else {
+            System.out.println("Product id not found after adding.");
+        }
+
+        System.out.println("--Update Product--");
+        if (verifyProduct != null) {
+            verifyProduct.setProductName("Tasty Cinnamon Cereal");
+            verifyProduct.setUnitPrice(30.00);
+            productDao.update(verifyProduct);
+            System.out.println("Updated product");
+
+            Product updatedProduct = productDao.find(verifyProduct.getProductId());
+            System.out.println("After update: " + updatedProduct);
+        }
+
+//        // Test 6: Delete the customer
+//        System.out.println("\n--- Test 6: Delete Product ---");
+//        productDao.delete(addedProduct.getProductId());
+//        System.out.println("Deleted productId(s)");
+//
+//        Product deletedProduct = productDao.find(addedProduct.getProductId());
+//        if (deletedProduct == null) {
+//            System.out.println("Confirmed: Product(s) no longer exists.");
+//        } else {
+//            System.out.println("Warning: Product(s) still exists after deletion.");
+//        }
+//    }
     }
 }
